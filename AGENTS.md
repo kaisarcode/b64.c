@@ -1,0 +1,70 @@
+# AGENTS.md
+
+## Project Context
+
+`b64.c` is a small C library and CLI for RFC 4648 base64 encoding and decoding.
+
+It handles binary data encoding and base64 string decoding. It composes with other kclibs through the standard runner interface and Unix pipe composition.
+
+Read `README.md`, `DESIGN.md`, the public header, and the tests before changing behavior.
+
+## Core Invariants
+
+- Encoding produces standard RFC 4648 base64 with padding.
+- Decoding rejects input whose length is not divisible by 4.
+- Decoding rejects invalid base64 characters.
+- Both functions return NULL on allocation failure.
+- NULL input arguments cause NULL return.
+- Output is caller-owned and must be freed with `free()`.
+
+## Scope Boundaries
+
+Keep the project focused on base64 encoding and decoding. Do not add:
+
+- URL-safe base64 variant;
+- custom padding behavior;
+- streaming/chunked API;
+- line-wrapping of output;
+- other encoding formats (hex, etc.);
+- compression or encryption;
+- network or file I/O;
+- configuration or options.
+
+## Source Layout
+
+Preserve the existing four-file `src/` layout:
+
+- `src/b64.c` owns CLI parsing, standard input, standard output, and process exit behavior.
+- `src/libb64.c` owns encoding, decoding, and the runner.
+- `src/libb64.h` is the public API and ownership contract.
+- `src/test.c` contains all tests.
+
+Extend these files when behavior changes. Do not add source, header, or test files. Keep the CLI thin and reusable behavior in the library.
+
+## Testing and Validation
+
+Keep public API contract tests in `src/test.c`. Test behavior through the public API and CLI-visible contracts, including:
+
+- encoding and decoding round-trips;
+- empty input;
+- padding variations (0, 1, 2 padding characters);
+- invalid base64 rejection;
+- NULL argument handling;
+- exact output lengths;
+- exact stdout behavior.
+
+Do not weaken tests to accommodate a regression.
+
+For behavioral changes, use the repository build sequence:
+
+```bash
+make
+make test
+kcs .
+```
+
+Do not run `make clean` or delete build artifacts without explicit authorization.
+
+## Completion Standard
+
+A change is complete when the requested encoding or decoding behavior is correct, ownership and cleanup are sound, failures are legible, relevant tests pass, documentation matches the implementation, and no unrelated platform or enterprise machinery was introduced.
