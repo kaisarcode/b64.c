@@ -207,71 +207,6 @@ static int case_null_args(void) {
 }
 
 /**
- * Tests runner encode subcommand.
- * @return 0 on success, 1 on failure.
- */
-static int case_run_encode(void) {
-    char *err = NULL;
-    char *result = kc_b64_run("{\"cmd\":\"encode\",\"data\":\"hello\"}", &err);
-    int rc = 0;
-    rc += expect_true("run encode returns non-NULL", result != NULL);
-    rc += expect_true("run encode no error", err == NULL);
-    if (result) {
-        rc += expect_true("run encode contains result", strstr(result, "aGVsbG8=") != NULL);
-        free(result);
-    }
-    free(err);
-    return rc;
-}
-
-/**
- * Tests runner decode subcommand.
- * @return 0 on success, 1 on failure.
- */
-static int case_run_decode(void) {
-    char *err = NULL;
-    char *result = kc_b64_run("{\"cmd\":\"decode\",\"data\":\"aGVsbG8=\"}", &err);
-    int rc = 0;
-    rc += expect_true("run decode returns non-NULL", result != NULL);
-    rc += expect_true("run decode no error", err == NULL);
-    if (result) {
-        rc += expect_true("run decode contains data", strstr(result, "hello") != NULL);
-        free(result);
-    }
-    free(err);
-    return rc;
-}
-
-/**
- * Tests runner with missing cmd.
- * @return 0 on success, 1 on failure.
- */
-static int case_run_errors(void) {
-    char *err = NULL;
-    char *result;
-    int rc = 0;
-
-    result = kc_b64_run(NULL, &err);
-    rc += expect_true("run NULL payload returns NULL", result == NULL);
-    rc += expect_true("run NULL payload sets error", err != NULL);
-    free(err);
-
-    err = NULL;
-    result = kc_b64_run("{\"data\":\"test\"}", &err);
-    rc += expect_true("run missing cmd returns NULL", result == NULL);
-    rc += expect_true("run missing cmd sets error", err != NULL);
-    free(err);
-
-    err = NULL;
-    result = kc_b64_run("{\"cmd\":\"unknown\"}", &err);
-    rc += expect_true("run unknown cmd returns NULL", result == NULL);
-    rc += expect_true("run unknown cmd sets error", err != NULL);
-    free(err);
-
-    return rc;
-}
-
-/**
  * Tests version function.
  * @return 0 on success, 1 on failure.
  */
@@ -301,9 +236,6 @@ int main(int argc, char **argv) {
     if (strcmp(argv[1], "decode-invalid") == 0) return case_decode_invalid();
     if (strcmp(argv[1], "decode-bad-length") == 0) return case_decode_bad_length();
     if (strcmp(argv[1], "null-args") == 0) return case_null_args();
-    if (strcmp(argv[1], "run-encode") == 0) return case_run_encode();
-    if (strcmp(argv[1], "run-decode") == 0) return case_run_decode();
-    if (strcmp(argv[1], "run-errors") == 0) return case_run_errors();
     if (strcmp(argv[1], "version") == 0) return case_version();
     fprintf(stderr, "unknown test case: %s\n", argv[1]);
     return 2;

@@ -4,7 +4,7 @@
 
 `b64.c` is a small C library and CLI for RFC 4648 base64 encoding and decoding.
 
-It handles binary data encoding and base64 string decoding. It composes with other kclibs through the standard runner interface and Unix pipe composition.
+It handles binary data encoding and base64 string decoding. It composes with other kclibs through Unix pipe composition.
 
 Read `README.md`, `DESIGN.md`, the public header, and the tests before changing behavior.
 
@@ -35,7 +35,7 @@ Keep the project focused on base64 encoding and decoding. Do not add:
 Preserve the existing four-file `src/` layout:
 
 - `src/b64.c` owns CLI parsing, standard input, standard output, and process exit behavior.
-- `src/libb64.c` owns encoding, decoding, and the runner.
+- `src/libb64.c` owns encoding and decoding.
 - `src/libb64.h` is the public API and ownership contract.
 - `src/test.c` contains all tests.
 

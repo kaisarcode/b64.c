@@ -6,7 +6,7 @@
 
 ## Architecture
 
-The library owns encoding and decoding logic. The CLI adapts stdin/stdout for human use. The runner provides a JSON interface for programmatic composition.
+The library owns encoding and decoding logic. The CLI adapts stdin/stdout for human use.
 
 ```
 b64.c (CLI)
@@ -39,7 +39,6 @@ b64.c (CLI)
 ## Composition
 
 - CLI composes through stdin/stdout (binary in, base64 out for encode; base64 in, binary out for decode).
-- Runner composes through JSON in, JSON out.
 - Library composes through function calls.
 
 ## Non-Goals

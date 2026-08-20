@@ -39,17 +39,6 @@ char *kc_b64_encode(const void *data, size_t size);
  */
 void *kc_b64_decode(const char *str, size_t *out_size);
 
-/**
- * Executes a CLI subcommand from a JSON payload and returns the result as a
- * JSON string. The CLI builds a payload from its arguments, calls this
- * function, and formats the result back to its usual output.
- * @param payload_json JSON payload with "cmd" and "args".
- * @param out_err Receives a malloc'd error message on failure, or NULL on
- *     success.
- * @return malloc'd JSON result string, or NULL on failure.
- */
-char *kc_b64_run(const char *payload_json, char **out_err);
-
 #ifdef __cplusplus
 }
 #endif

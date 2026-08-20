@@ -56,7 +56,6 @@ free(decoded);
 
 - `kc_b64_encode()` - encodes binary data into a malloc'd base64 string.
 - `kc_b64_decode()` - decodes a base64 string into malloc'd binary data.
-- `kc_b64_run()` - executes a CLI subcommand from a JSON payload.
 
 ## Build
 

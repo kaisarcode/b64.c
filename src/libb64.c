@@ -12,8 +12,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "parson.h"
-
 #ifndef KC_B64_BUILD_VERSION
 #define KC_B64_BUILD_VERSION 0
 #endif
@@ -109,69 +107,4 @@ void *kc_b64_decode(const char *str, size_t *out_size) {
     }
     *out_size = j;
     return out;
-}
-
-/**
- * Executes a CLI subcommand from a JSON payload and returns the result as a
- * JSON string.
- * @param payload_json JSON payload with "cmd" and "args".
- * @param out_err Receives a malloc'd error message on failure, or NULL on
- *     success.
- * @return malloc'd JSON result string, or NULL on failure.
- */
-char *kc_b64_run(const char *payload_json, char **out_err) {
-    JSON_Value *root;
-    JSON_Object *o;
-    const char *cmd;
-    const char *data;
-    char *result = NULL;
-
-    if (out_err != NULL) *out_err = NULL;
-    if (payload_json == NULL) {
-        if (out_err) *out_err = strdup("missing payload");
-        return NULL;
-    }
-
-    root = json_parse_string(payload_json);
-    if (root == NULL || json_value_get_type(root) != JSONObject) {
-        json_value_free(root);
-        if (out_err) *out_err = strdup("missing or invalid \"cmd\"");
-        return NULL;
-    }
-    o = json_value_get_object(root);
-
-    cmd = json_object_get_string(o, "cmd");
-    if (cmd == NULL) {
-        json_value_free(root);
-        if (out_err) *out_err = strdup("missing or invalid \"cmd\"");
-        return NULL;
-    }
-
-    data = json_object_get_string(o, "data");
-    if (data == NULL) {
-        json_value_free(root);
-        if (out_err) *out_err = strdup("missing \"data\"");
-        return NULL;
-    }
-
-    if (strcmp(cmd, "encode") == 0) {
-        result = kc_b64_encode(data, strlen(data));
-    } else if (strcmp(cmd, "decode") == 0) {
-        size_t decoded_size;
-        void *decoded = kc_b64_decode(data, &decoded_size);
-        if (decoded != NULL) {
-            JSON_Value *rroot = json_value_init_object();
-            JSON_Object *ro = json_value_get_object(rroot);
-            json_object_set_string(ro, "data", decoded);
-            result = json_serialize_to_string(rroot);
-            json_value_free(rroot);
-            free(decoded);
-        }
-    }
-
-    json_value_free(root);
-    if (result == NULL) {
-        if (out_err) *out_err = strdup("unknown command or invalid arguments");
-    }
-    return result;
 }
