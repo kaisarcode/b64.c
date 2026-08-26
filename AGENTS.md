@@ -58,9 +58,9 @@ Do not weaken tests to accommodate a regression.
 For behavioral changes, use the repository build sequence:
 
 ```bash
+kcs .
 make
 make test
-kcs .
 ```
 
 Do not run `make clean` or delete build artifacts without explicit authorization.
