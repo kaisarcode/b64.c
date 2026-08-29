@@ -427,12 +427,10 @@ test:
 				-DB64_BUILD_VERSION=$(BUILD_VERSION) \
 				-DB64_TEST_SHARED_LIBRARY=$(CURDIR)/$(BIN_DIR)/x86_64/windows/libb64.dll \
 				-DB64_TEST_IMPORT_LIBRARY=$(CURDIR)/$(BIN_DIR)/x86_64/windows/libb64.dll.a \
-				-DB64_TEST_CLI=$(CURDIR)/$(BIN_DIR)/x86_64/windows/b64.exe \
-				-DCMAKE_CROSSCOMPILING_EMULATOR=$(WINE) \
 				-G Ninja -Wno-dev > /dev/null; \
 		fi; \
-		cmake --build $(BUILD_DIR)/test-wine --target b64_contract_test; \
-		ctest --test-dir $(BUILD_DIR)/test-wine --output-on-failure; \
+		cmake --build $(BUILD_DIR)/test-wine --target b64_contract_test || exit 1; \
+		EGL_LOG_LEVEL=fatal WINEDEBUG=-all $(WINE) $(BUILD_DIR)/test-wine/b64_contract_test.exe all; \
 	else \
 		if [ "$(NATIVE_ARCH)" = "unsupported" ] || [ "$(NATIVE_PLATFORM)" = "unsupported" ]; then \
 			echo "Unsupported native test target $(HOST_ARCH)/$(HOST_SYSTEM)" >&2; \
@@ -448,12 +446,10 @@ test:
 				-DB64_BUILD_TESTS=ON \
 				-DB64_BUILD_VERSION=$(BUILD_VERSION) \
 				-DB64_TEST_SHARED_LIBRARY=$(CURDIR)/$(BIN_DIR)/$(NATIVE_TARGET)/$(NATIVE_SHARED_NAME) \
-				-DB64_TEST_CLI=$(CURDIR)/$(BIN_DIR)/$(NATIVE_TARGET)/b64$(NATIVE_EXE_EXT) \
-				$(NATIVE_IMPORT_LIBRARY) \
 				-G Ninja -Wno-dev > /dev/null; \
 		fi; \
-		cmake --build $(BUILD_DIR)/test --target b64_contract_test; \
-		ctest --test-dir $(BUILD_DIR)/test --output-on-failure; \
+		cmake --build $(BUILD_DIR)/test --target b64_contract_test || exit 1; \
+		$(BUILD_DIR)/test/b64_contract_test all; \
 	fi
 
 wine:

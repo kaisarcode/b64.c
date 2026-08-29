@@ -47,8 +47,6 @@ if(NOT B64_TEST_EXTERNAL_ARTIFACTS)
 endif()
 
 if(B64_BUILD_TESTS)
-    enable_testing()
-
     if(B64_TEST_SHARED_LIBRARY)
         add_library(b64_test_shared SHARED IMPORTED)
         set_target_properties(b64_test_shared PROPERTIES
@@ -76,6 +74,4 @@ if(B64_BUILD_TESTS)
             $<TARGET_FILE:${B64_TEST_SHARED_TARGET}>
             $<TARGET_FILE_DIR:b64_contract_test>
     )
-
-    add_test(NAME library-all COMMAND b64_contract_test all)
 endif()
