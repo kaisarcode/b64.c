@@ -67,18 +67,9 @@ if(B64_BUILD_TESTS)
         set(B64_TEST_SHARED_TARGET b64_test_shared)
     endif()
 
-    if(B64_TEST_CLI)
-        set(B64_TEST_CLI_TARGET_PATH "${B64_TEST_CLI}")
-    else()
-        set(B64_TEST_CLI_TARGET_PATH "$<TARGET_FILE:b64>")
-    endif()
-
     add_executable(b64_contract_test src/test.c)
     target_include_directories(b64_contract_test PRIVATE src)
     target_link_libraries(b64_contract_test PRIVATE ${B64_TEST_SHARED_TARGET})
-    target_compile_definitions(b64_contract_test PRIVATE
-        KC_B64_TEST_CLI="${B64_TEST_CLI_TARGET_PATH}"
-    )
 
     add_custom_command(TARGET b64_contract_test POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -86,14 +77,5 @@ if(B64_BUILD_TESTS)
             $<TARGET_FILE_DIR:b64_contract_test>
     )
 
-    add_test(NAME library-encode-empty COMMAND b64_contract_test encode-empty)
-    add_test(NAME library-encode-hello COMMAND b64_contract_test encode-hello)
-    add_test(NAME library-encode-binary COMMAND b64_contract_test encode-binary)
-    add_test(NAME library-decode-empty COMMAND b64_contract_test decode-empty)
-    add_test(NAME library-decode-hello COMMAND b64_contract_test decode-hello)
-    add_test(NAME library-roundtrip COMMAND b64_contract_test roundtrip)
-    add_test(NAME library-decode-invalid COMMAND b64_contract_test decode-invalid)
-    add_test(NAME library-decode-bad-length COMMAND b64_contract_test decode-bad-length)
-    add_test(NAME library-null-args COMMAND b64_contract_test null-args)
-    add_test(NAME library-version COMMAND b64_contract_test version)
+    add_test(NAME library-all COMMAND b64_contract_test all)
 endif()
