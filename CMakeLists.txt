@@ -33,14 +33,14 @@ set_source_files_properties(src/libb64.c PROPERTIES
 )
 
 if(NOT B64_TEST_EXTERNAL_ARTIFACTS)
-    add_library(b64_static STATIC src/libb64.c lib/parson/parson.c)
+    add_library(b64_static STATIC src/libb64.c)
     set_target_properties(b64_static PROPERTIES OUTPUT_NAME "b64")
-    target_include_directories(b64_static PUBLIC src lib/parson)
+    target_include_directories(b64_static PUBLIC src)
 
-    add_library(b64_shared SHARED src/libb64.c lib/parson/parson.c)
+    add_library(b64_shared SHARED src/libb64.c)
     set_target_properties(b64_shared PROPERTIES OUTPUT_NAME "b64")
     set_target_properties(b64_shared PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
-    target_include_directories(b64_shared PUBLIC src lib/parson)
+    target_include_directories(b64_shared PUBLIC src)
 
     add_executable(b64 src/b64.c)
     target_link_libraries(b64 b64_static)
@@ -74,7 +74,7 @@ if(B64_BUILD_TESTS)
     endif()
 
     add_executable(b64_contract_test src/test.c)
-    target_include_directories(b64_contract_test PRIVATE src lib/parson)
+    target_include_directories(b64_contract_test PRIVATE src)
     target_link_libraries(b64_contract_test PRIVATE ${B64_TEST_SHARED_TARGET})
     target_compile_definitions(b64_contract_test PRIVATE
         KC_B64_TEST_CLI="${B64_TEST_CLI_TARGET_PATH}"
